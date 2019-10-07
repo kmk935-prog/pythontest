@@ -3,10 +3,17 @@ from django.http import HttpResponse
 
 # Create your views here.
 def index(request):
-    #return HttpResponse("Hello Django!!")
-    if 'msg' in request.GET:
-        msg = request.GET['msg']
-        result = 'you typed: "' + msg + '".'
-    else:
-        result = 'please send msg parameter!'
-    return HttpResponse(result)
+    params = {
+        'title':'Hello/Index',
+        'msg':'これは、サンプルで作ったページです。',
+        'goto':'next',
+    }
+    return render(request, 'hello/index.html', params)
+
+def next(request):
+    params = {
+        'title':'Hello/Next',
+        'msg':'これは、もう一つのページです。',
+        'goto':'index',
+    }
+    return render(request, 'hello/index.html', params)
