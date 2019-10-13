@@ -1,22 +1,31 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from .models import Friend
 from .forms import HelloForm
 
 # Create your views here.
 def index(request):
     data = Friend.objects.all()
-    param = {
+    params = {
         'title':'Hello',
-        'message':'all Friends.',
-        'form':HelloForm,
-        'data':[],
+        'data': data,
+    }
+    return render(request, 'hello/index.html', params)
+
+# Create model
+def create(request):
+    params = {
+        'title':'Hello',
+        'form': HelloForm()
     }
     if (request.method == 'POST'):
-        num=request.POST['id']
-        item = Friend.objects.get(id=num)
-        param['data'] = [item]
-        param['form'] = HelloForm(request.POST)
-    else:
-        param['data'] = Friend.objects.all()
-    return render(request, 'hello/index.html',param)
+        name = request.POST['name']
+        mail = request.POST['mail']
+        gender = 'gender' in request.POST
+        age = int(request.POST['age'])
+        birth = request.POST['birthday']
+        friend = Friend(name=name,mail=mail,gender=gender,age=age,birthday=birth)
+        friend.save()
+        return redirect(to='/hello')
+    return render(request, 'hello/create.html', params)
